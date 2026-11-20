@@ -11,7 +11,7 @@ from mcdreforged.api.all import *
 
 PLUGIN_METADATA = {
 	'id': 'crash_push',
-	'version': '0.1.0',
+	'version': '0.1.1',
 	'name': 'Crash Push',
 	'description': {
 		'en_us': 'Push a Bark / ServerChan / webhook notification when the server crashes',
@@ -76,6 +76,7 @@ class Config(Serializable):
 	log_tail_lines: int = 12  # 推送里附带的日志尾部行数，0 表示不带
 	timeout_seconds: int = 8
 	rate_limit_seconds: int = 20  # 两条推送之间的最小间隔，防崩溃循环刷屏
+	test_cooldown_seconds: int = 30  # !!crashpush test 的冷却，防止连点刷推送
 
 
 config: Config = Config()
@@ -84,6 +85,7 @@ crash_detected = False
 expected_stop = False
 last_notify_times = {}  # 标题 -> 上次推送时间，同类通知才做限流
 last_stop_notify_ts = 0.0  # 上一次处理停服事件的时间，用于去重
+last_test_ts = 0.0  # 上一次 !!crashpush test 的时间，用于冷却
 state = {'last_stop_ts': None, 'last_stop_was_crash': False}
 
 
@@ -265,10 +267,14 @@ def on_load(server: PluginServerInterface, old):
 	global config
 	config = server.load_config_simple('config.json', target_class=Config, encoding='utf-8-sig')
 	_load_state(server)
-	server.register_help_message('!!crashpush test', '发一条测试推送，验证 Bark / Server酱 配置')
+	server.register_help_message(
+		'!!crashpush test', '发一条测试推送，验证 Bark / Server酱 配置',
+		permission=PermissionLevel.ADMIN,  # 普通玩家连帮助里都看不到这条
+	)
 	server.register_command(
 		Literal('!!crashpush').requires(
-			lambda src: src.has_permission(PermissionLevel.PHYSICAL_SERVER_CONTROL_LEVEL)
+			_has_permission_to_manage,
+			lambda src: RText('需要 MCDR 管理员（admin）或更高权限', RColor.red),
 		).then(
 			Literal('test').runs(_cmd_test)
 		).then(
@@ -279,9 +285,27 @@ def on_load(server: PluginServerInterface, old):
 		config.bark.enabled, config.serverchan.enabled, config.webhook.enabled))
 
 
+def _has_permission_to_manage(source: CommandSource) -> bool:
+	# 只允许 MCDR admin(3) 及以上（含 owner）；guest / user / helper 一律拒绝，
+	# 否则普通玩家连点 !!crashpush test 会一直往服主手机上推消息
+	return source.has_permission(PermissionLevel.ADMIN)
+
+
 def _cmd_test(source: CommandSource):
+	global last_test_ts
+	# 命令树已经拦了一道，这里再查一次：以后改命令结构也不会把入口漏出去
+	if not _has_permission_to_manage(source):
+		source.reply('需要 MCDR 管理员（admin）或更高权限才能测试推送')
+		return
+	now = time.time()
+	wait = config.test_cooldown_seconds - (now - last_test_ts)
+	if wait > 0:
+		source.reply('测试推送冷却中，还要等 {:.0f} 秒'.format(wait))
+		return
+	last_test_ts = now
 	_notify(source.get_server(), 'Minecraft 崩服推送测试', '收到这条说明链路是通的。')
 	source.reply('已异步发送测试推送，看手机和 MCDR 日志')
+
 
 
 def _cmd_reload(source: CommandSource):

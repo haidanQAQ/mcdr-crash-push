@@ -132,7 +132,14 @@ A full example lives in [`examples/config.example.json`](examples/config.example
 | `!!crashpush test` | send a test notification asynchronously |
 | `!!crashpush reload` | re-read `config.json` |
 
-Both require OWNER-level permission (`PHYSICAL_SERVER_CONTROL_LEVEL`).
+Both require **ADMIN level or higher** (`PermissionLevel.ADMIN`, i.e. `admin` / `owner`);
+`guest`, `user` and `helper` are rejected, and the help entry is not shown to them at all.
+
+That gate matters because `!!crashpush test` pushes a real notification to your phone: without it,
+any player could spam the command and turn a chat permission into a phone-spam permission.
+There is also a per-command cooldown (`test_cooldown_seconds`, default 30s) so even an admin
+cannot rapid-fire it.
+
 
 ### Gotchas worth knowing
 
@@ -291,7 +298,13 @@ MCDR 插件目录里**没有** Bark / Server酱 / 通用推送插件。我把官
 | `!!crashpush test` | 异步发一条测试推送 |
 | `!!crashpush reload` | 重读 `config.json` |
 
-两者都需要 OWNER 权限（`PHYSICAL_SERVER_CONTROL_LEVEL`）。
+两者都需要 **MCDR 管理员（`admin`）或更高权限**（`PermissionLevel.ADMIN`，含 `owner`）；
+`guest` / `user` / `helper` 会被拒绝，帮助列表里也不会向这些人显示这条命令。
+
+这个权限门是必须的：`!!crashpush test` 会真的往你手机上推一条消息，不限制的话
+任何玩家都能连点，让一个聊天权限变成骚扰服主的推送权限。另外还有单条命令的冷却
+（`test_cooldown_seconds`，默认 30 秒），管理员也不能连发刷屏。
+
 
 ### 踩过的坑
 
