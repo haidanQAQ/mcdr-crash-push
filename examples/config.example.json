@@ -1,0 +1,29 @@
+{
+    "bark": {
+        "enabled": false,
+        "server_url": "https://api.day.app",
+        "device_key": "",
+        "group": "Minecraft",
+        "sound": "alarm",
+        "level": "timeSensitive"
+    },
+    "serverchan": {
+        "enabled": false,
+        "sendkey": "",
+        "api": "https://sctapi.ftqq.com/{sendkey}.send"
+    },
+    "webhook": {
+        "enabled": false,
+        "url": "",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body_template": "{\"title\": \"{title}\", \"body\": \"{body}\"}"
+    },
+    "notify_on_normal_stop": false,
+    "notify_on_start": false,
+    "log_tail_lines": 12,
+    "timeout_seconds": 8,
+    "rate_limit_seconds": 20
+}
