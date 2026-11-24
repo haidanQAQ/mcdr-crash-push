@@ -11,7 +11,7 @@
 
 ### Why this exists
 
-MCDR's plugin catalogue has **no** Bark / ServerChan / generic push plugin. I checked all 235 plugins in the official catalogue (id + name + description) and searched GitHub for `mcdr+serverchan`, `mcdr+bark`, `mcdreforged+crash+notify`, `mcdr+plugin+webhook+notify` — **zero results** for every push-service keyword.
+MCDR's plugin catalogue has **no** Bark / ServerChan / generic push plugin. I checked every entry in the official catalogue (235 at the time of writing, more today; id + name + description) and searched GitHub for `mcdr+serverchan`, `mcdr+bark`, `mcdreforged+crash+notify`, `mcdr+plugin+webhook+notify` — **zero results** for every push-service keyword.
 
 The two closest things are not what you need:
 
@@ -179,7 +179,7 @@ MIT — see [LICENSE](LICENSE).
 
 ### 为什么写这个
 
-MCDR 插件目录里**没有** Bark / Server酱 / 通用推送插件。我把官方目录的 235 个插件（id + 名称 + 描述）全过了一遍，又用 GitHub 仓库搜索了 `mcdr+serverchan`、`mcdr+bark`、`mcdreforged+crash+notify`、`mcdr+plugin+webhook+notify` —— 所有推送服务关键词**全部 0 命中**。
+MCDR 插件目录里**没有** Bark / Server酱 / 通用推送插件。我把官方目录的每一份条目都过了一遍（写这篇时是 235 个，现在更多；id + 名称 + 描述），又用 GitHub 仓库搜索了 `mcdr+serverchan`、`mcdr+bark`、`mcdreforged+crash+notify`、`mcdr+plugin+webhook+notify` —— 所有推送服务关键词**全部 0 命中**。
 
 最接近的两个都不是你要的：
 
