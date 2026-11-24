@@ -9,18 +9,6 @@ from typing import Optional
 
 from mcdreforged.api.all import *
 
-PLUGIN_METADATA = {
-	'id': 'crash_push',
-	'version': '0.1.1',
-	'name': 'Crash Push',
-	'description': {
-		'en_us': 'Push a Bark / ServerChan / webhook notification when the server crashes',
-		'zh_cn': '服务端崩溃时通过 Bark / Server酱 / Webhook 推送通知',
-	},
-	'author': ['crash_push contributors'],
-	'link': 'https://github.com/haidanQAQ/mcdr-crash-push',
-}
-
 # 崩溃标志：不同版本 / 不同 mod loader 的写法不一样，命中任意一条即视为崩溃
 CRASH_MARKERS = (
 	'This crash report has been saved to:',

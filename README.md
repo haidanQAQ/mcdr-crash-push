@@ -20,11 +20,11 @@ The two closest things are not what you need:
 | [crash_restart](https://github.com/TISUnion/CrashRestart) | detects a crash, restarts the server | no notification at all |
 | mcdr2restic | multi-channel async notifications | backup only, never watches for crashes |
 
-So the crash **detection** is already a solved, tiny problem (it is literally two event handlers, see [Detection logic](#detection-logic)) and this plugin reuses it. The **delivery** layer is what doesn't exist — so this repo contains just that, in one file, with zero third-party dependencies.
+So the crash **detection** is already a solved, tiny problem (it is literally two event handlers, see [Detection logic](#detection-logic)) and this plugin reuses it. The **delivery** layer is what doesn't exist — so this repo contains just that: a single-module plugin with zero third-party dependencies, shipped as a packed `.mcdr`.
 
 ### Features
 
-- **Single file, standard library only** — drop `crash_push.py` into `plugins/`, done.
+- **One packed file, standard library only** — drop the `.mcdr` into `plugins/`, done.
 - **Three channels at once** — Bark (incl. self-hosted), ServerChan (Turbo / ³), and a generic webhook with a templated body (Feishu, DingTalk, WeCom, Slack, n8n, …).
 - **Useful payload** — crash-report absolute path, return code (translated to a signal name when the server was killed), and the tail of the log.
 - **No false alarms on your own stops** — `stop` / `restart` / `!!MCDR stop` from the console are recognised as intentional.
@@ -35,12 +35,14 @@ So the crash **detection** is already a solved, tiny problem (it is literally tw
 
 ### Install
 
-1. Copy `crash_push.py` into your MCDR `plugins/` folder (it coexists happily with `crash_restart.py`).
+1. Download the `.mcdr` from [Releases](https://github.com/haidanQAQ/mcdr-crash-push/releases) and drop it into your MCDR `plugins/` folder (it coexists happily with `crash_restart`).
 2. `!!MCDR reload plugin`, or restart MCDR.
 3. `config/crash_push/config.json` is generated on first load. Edit it, then `!!crashpush reload`.
 4. Run `!!crashpush test` — you should get a notification within a second or two.
 
 Requires MCDR 2.x (tested on 2.16.3). No pip packages needed.
+
+Building the package yourself: `python -m mcdreforged pack -i . -o dist`.
 
 ### Configuration
 
@@ -186,11 +188,11 @@ MCDR 插件目录里**没有** Bark / Server酱 / 通用推送插件。我把官
 | [crash_restart](https://github.com/TISUnion/CrashRestart) | 检测崩溃并自动重启 | 完全不推送 |
 | mcdr2restic | 多通道异步通知 | 只用于备份场景，不监听崩服 |
 
-也就是说，**崩溃判定**已经是解决过的极小问题（就是两个事件回调，见[崩溃判定逻辑](#崩溃判定逻辑)），本插件直接沿用；**推送这一层**才是没人做过的部分——这个仓库就只做这一层，一个文件，零第三方依赖。
+也就是说，**崩溃判定**已经是解决过的极小问题（就是两个事件回调，见[崩溃判定逻辑](#崩溃判定逻辑)），本插件直接沿用；**推送这一层**才是没人做过的部分——这个仓库就只做这一层：单模块、零第三方依赖，打包成一个 `.mcdr` 分发。
 
 ### 功能
 
-- **单文件、纯标准库** —— `crash_push.py` 丢进 `plugins/` 就能用。
+- **单文件、纯标准库** —— `.mcdr` 丢进 `plugins/` 就能用。
 - **三个通道可同时开** —— Bark（支持自建服务端）、Server酱（Turbo / ³）、以及模板化的通用 Webhook（飞书、钉钉、企业微信、Slack、n8n 都行）。
 - **推送内容有用** —— 崩溃报告绝对路径、返回码（被信号杀死时翻译成信号名）、日志尾部。
 - **自己停服不误报** —— 控制台的 `stop` / `restart` / `!!MCDR stop` 会被识别成主动停服。
@@ -201,12 +203,14 @@ MCDR 插件目录里**没有** Bark / Server酱 / 通用推送插件。我把官
 
 ### 安装
 
-1. 把 `crash_push.py` 放进 MCDR 的 `plugins/` 目录（和 `crash_restart.py` 放一起互不影响）。
+1. 从 [Releases](https://github.com/haidanQAQ/mcdr-crash-push/releases) 下载 `.mcdr`，放进 MCDR 的 `plugins/` 目录（和 crash_restart 放一起互不影响）。
 2. 执行 `!!MCDR reload plugin`，或重启 MCDR。
 3. 首次加载会生成 `config/crash_push/config.json`，改完执行 `!!crashpush reload` 生效。
 4. 先跑一遍 `!!crashpush test`，一两秒内手机上应该能收到。
 
 依赖 MCDR 2.x（在 2.16.3 上验证）。不需要任何 pip 包。
+
+自己打包：`python -m mcdreforged pack -i . -o dist`。
 
 ### 配置
 
